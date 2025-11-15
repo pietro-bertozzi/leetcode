@@ -1,0 +1,50 @@
+name: Scaffold LeetCode Problems
+
+on:
+  push:
+    paths:
+      - "scripts/*.json"
+
+permissions:
+  contents: write
+
+jobs:
+  scaffold:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Commit scaffolding
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          for f in scripts/*.json; do
+            [[ "$f" == *details.json ]] && continue
+            python scripts/scaffolding.py "$f"
+
+            json_name=$(basename "$f" .json)
+
+            git add "scripts/${json_name}-details.json"
+            git add problems/
+
+            if ! git diff --cached --quiet; then
+              git commit -m "chore(${json_name}): scaffolding"
+            fi
+          done
+
+      - name: Push
+        run: git push
