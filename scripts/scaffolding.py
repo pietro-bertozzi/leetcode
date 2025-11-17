@@ -19,7 +19,7 @@ def fetch_problem_details(name: str) -> dict:
     query = """
     query getQuestionDetail($titleSlug: String!) {
       question(titleSlug: $titleSlug) {
-        questionId
+        questionFrontendId
         title
         titleSlug
         difficulty
@@ -36,7 +36,7 @@ def fetch_problem_details(name: str) -> dict:
         raise Exception(data["errors"])
     q = data["data"]["question"]
     return {
-        "id": q["questionId"],
+        "id": q["questionFrontendId"],
         "title": q["title"],
         "slug": q["titleSlug"],
         "difficulty": q["difficulty"],
