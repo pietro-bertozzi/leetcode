@@ -25,7 +25,7 @@ class Solution:
         left = 1
         right = n
         while left <= right:
-            mid = (right+left)//2
+            mid = (right + left) // 2
             response = self.guess(mid)
             if response == -1:
                 right = mid - 1
